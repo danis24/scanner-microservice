@@ -1,0 +1,21 @@
+language: php
+
+php:
+  - 7.0
+
+before_script:
+  - cp .env.travis .env
+  - mysql -e 'create database homestead_test;'
+  - composer self-update
+
+script:
+  - composer update
+
+deploy:
+  provider: heroku
+  api_key: 61fe277e-bef7-4ff8-82be-d9f8b1624ab7
+  app:
+    master: target-microservice
+    run:
+        - "cp .env.example .env"
+        - "php artisan migrate"
