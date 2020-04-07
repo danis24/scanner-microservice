@@ -69,6 +69,47 @@ class ScannerController extends Controller
         // return $this->presenter->renderPaginator($this->scanner->browse());
     }
 
+    public function subdomainChecker(Request $request)
+    {
+        $this->validate($request, [
+            "url" => "required"
+        ]);
+        $subdomain = "https://api.indoxploit.or.id/domain/".$request->url;
+        $client = $this->client->request("GET", $subdomain);
+        $responses = json_decode($client->getBody());
+        return response()->json($responses);
+    }
+
+    public function checkDomain(Request $request)
+    {
+        $this->validate($request, [
+            "url" => "required"
+        ]);
+        try {
+            $client = $this->client->request("GET", $request->url);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $client = $e->getResponse();
+        }
+        if ($client == null) {
+            $data = [
+                "status" => "down"
+            ];
+            return response()->json($data);
+        } else {
+            $responses = $client->getStatusCode();
+            if ($responses == 200 || $responses == 302) {
+                $data = [
+                    "status" => "up"
+                ];
+            } else {
+                $data = [
+                    "status" => "down"
+                ];
+            }
+            return response()->json($data);
+        }
+    }
+
     public function syncScanner()
     {
         $lists = $this->getWebScanList();

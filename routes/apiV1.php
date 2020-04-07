@@ -28,3 +28,5 @@ $router->get('/sync-scanner', 'ScannerController@syncScanner');
 $router->get('/results', 'ScannerController@scannerResult');
 $router->get('/results/{id}', 'ScannerController@showByScannerId');
 $router->get('/vulns/{id}', 'ScannerController@read');
+$router->post('/subdomain', 'ScannerController@subdomainChecker');
+$router->post('/check', 'ScannerController@checkDomain');
